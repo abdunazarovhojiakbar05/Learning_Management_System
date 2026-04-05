@@ -14,7 +14,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <!-- 1. Angus Mail (Bu o'sha sizga yetishmayotgan StreamProvider) -->
         <dependency>
             <groupId>org.eclipse.angus</groupId>
             <artifactId>jakarta.mail</artifactId>
@@ -22,7 +21,6 @@
 
         </dependency>
 
-        <!-- 2. Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -30,14 +28,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- 3. Jakarta Mail API -->
         <dependency>
             <groupId>jakarta.mail</groupId>
             <artifactId>jakarta.mail-api</artifactId>
             <version>2.1.2</version>
         </dependency>
 
-        <!-- 4. GSON (LMS loyihasining JSON qismi uchun) -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

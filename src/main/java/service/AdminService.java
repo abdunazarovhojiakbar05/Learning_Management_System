@@ -4,6 +4,7 @@ package service;
 import dto.UserDTO;
 import entity.User;
 import enums.Status2;
+import enums.UserRole;
 import repository.UserRepository;
 
 import java.util.ArrayList;
@@ -25,14 +26,11 @@ public class AdminService {
     }
 
 
-
-
-
     public boolean activeUser(String email) {
 
 
-        User user = userRepository.getAllUser(email);
-        if(user.getStatus().equals(Status2.BLOCKED)) {
+        User user = userRepository.getUserByEmail(email);
+        if (user.getStatus().equals(Status2.BLOCKED)) {
             user.setStatus2(Status2.ACTIVE);
             return true;
         }
@@ -40,8 +38,8 @@ public class AdminService {
     }
 
     public boolean blockUser(String email) {
-        User user = userRepository.getAllUser(email);
-        if( user != null && user.getStatus().equals(Status2.ACTIVE)) {
+        User user = userRepository.getUserByEmail(email);
+        if (user != null && user.getStatus().equals(Status2.ACTIVE)) {
             user.setStatus2(Status2.BLOCKED);
             return true;
         }
@@ -49,13 +47,33 @@ public class AdminService {
     }
 
     public boolean saveUser(UserDTO userDTO) {
-      return   userRepository.saveUser(userDTO);
+        return userRepository.saveUser(userDTO);
     }
 
     public List<User> getUserByNamePart(String name) {
 
-        List<User> user=  userRepository.searchUsersByName(name);
+        List<User> user = userRepository.searchUsersByName(name);
 
         return new ArrayList<>(user);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.getUserByEmail(email);
+    }
+
+    public boolean deleteUserByEmail(String email) {
+
+        User user = userRepository.getUserByEmail(email);
+
+        if (user == null) {
+            return false;
+        }
+
+        if (user.getRole() == UserRole.ADMIN) {
+            return false;
+        }
+
+        return userRepository.deleteUser(email);
+
     }
 }

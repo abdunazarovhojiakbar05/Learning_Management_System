@@ -34,7 +34,7 @@ public class UserRepository {
     }
 
 
-    public User getAllUser(String email) {
+    public User getUserByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -116,4 +116,26 @@ public class UserRepository {
           return false;
         }
     }
+
+
+
+    public boolean deleteUser(String email) {
+        String sql = "DELETE FROM users WHERE email = ?";
+
+        try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+            int rowsAffected = ps.executeUpdate();
+
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+
+            return false;
+        }
+    }
+
+
 }

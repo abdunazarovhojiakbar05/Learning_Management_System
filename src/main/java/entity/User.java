@@ -11,7 +11,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString(exclude = {"id", "role", "status","status2"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -23,4 +22,9 @@ public class User {
     private Status status;
     private Status2 status2;
 
+
+    @Override
+    public String toString() {
+        return "name: " + name + " || email: " + email + " || password: " + password;
+    }
 }

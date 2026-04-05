@@ -65,14 +65,59 @@ public class CrudUser {
 
     public static void UpdateUser() {
         ReadUser();
+        System.out.println("<= find with name part for update user => ");
 
+        String name = getStr("enter name part or full");
+        List<User> user = adminService.getUserByNamePart(name);
+        if (!user.isEmpty()) {
+            user.forEach(System.out::println);
+            String email = getStr("enter email");
+            User u = adminService.getUserByEmail(email);
+            updateUser(u);
+        }
+        System.out.println("User not found");
+    }
 
+    public static void updateUser(User u) {
+        System.out.println("""
+                1. update name
+                2. update password
+                """);
 
-
-
+        int menu = getNum("choose one");
+        switch (menu) {
+            case 1 -> updateName(u);
+            case 2 -> updatePassword(u);
+        }
     }
 
     public static void DeleteUser() {
+
+        ReadUser();
+
+        String name = getStr("enter name part or full");
+        List<User> user = adminService.getUserByNamePart(name);
+        if (!user.isEmpty()) {
+            user.forEach(System.out::println);
+            String email = getStr("enter email");
+           boolean res = adminService.deleteUserByEmail(email);
+           if (res) System.out.println("User deleted");
+           else System.out.println("User not found");
+
+        }
+        System.out.println("User not found");
     }
 
+    public static void updateName(User u) {
+        System.out.println("your old name is " + u.getName());
+        String str =  getStr("enter new  name");
+        u.setName(str);
+
+    }
+
+    public static void updatePassword(User u) {
+        System.out.println("your new password is " + u.getPassword());
+        String str =  getStr("enter new password");
+        u.setPassword(str);
+    }
 }

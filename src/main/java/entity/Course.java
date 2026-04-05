@@ -1,24 +1,31 @@
-  package entity;
+package entity;
 
-  import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 
 
-   @Getter
-   @Setter
-   @ToString(of = {"courseName", "price", "duration", "startTime", "endTime", "mentor"})
-   @NoArgsConstructor
-   @AllArgsConstructor
+public class Course {
 
-
-  public class Course {
-
-    private String courseId;
-    private String courseName;
-    private int price;
+    private String id;
+    private String name;
+    private double price;
     private String duration;
-    private String startTime;
-    private String endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private User mentor;
 
+    @Override
+    public String toString() {
+        return "name: " + name + " || price: " + price + " || duration: " + duration + " || start: " + startTime + " || end: " + endTime + " || mentor: " + mentor;
+    }
 
-   }
+}

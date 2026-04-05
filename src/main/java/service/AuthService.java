@@ -24,12 +24,12 @@ public class AuthService {
 
 
     public boolean checkUserAndCode(int code, String email, int num) {
-        User user = userRepository.getAllUser(email);
+        User user = userRepository.getUserByEmail(email);
         return !Objects.nonNull(user) && code == num;
     }
 
     public UserRole checkUser(String email, String password) {
-        User allUser = userRepository.getAllUser(email);
+        User allUser = userRepository.getUserByEmail(email);
         if (allUser!=null&&allUser.getPassword().equals(password)) {
             return allUser.getRole();
         }

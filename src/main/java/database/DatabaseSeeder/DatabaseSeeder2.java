@@ -2,16 +2,10 @@ package database.DatabaseSeeder;
 
 import com.github.javafaker.Faker;
 import dto.CourseDTO;
-import dto.UserDTO;
 import entity.Mentor;
-import enums.Status;
-import enums.Status2;
-import enums.UserRole;
-import repository.UserRepository;
-import service.AdminService;
 import service.CourseService;
-
 import java.time.LocalTime;
+import java.util.Random;
 import java.util.UUID;
 
 public class DatabaseSeeder2 {
@@ -21,31 +15,28 @@ public class DatabaseSeeder2 {
     public static void seedUsers(int count) {
         Faker faker = new Faker();
 
-
         System.out.println(count + " ta kurs qo'shilmoqda...");
 
+        Random random = new Random();
         for (int i = 0; i < count; i++) {
             String id = UUID.randomUUID().toString();
-            String name = faker.name().fullName();
-            double price = faker.random().nextDouble();
-            String duration = LocalTime.now().toString();
-            LocalTime startTime = LocalTime.now();
-            LocalTime endTime = LocalTime.now();
+            String name = faker.educator().course();
+            double price = random.nextDouble(1_000_000, 5_000_000);
 
+            int num = random.nextInt(2, 5);
+            String duration =  num + " hour";
+
+
+
+            String startTime1 = random.nextInt(10, 24) + ":" + random.nextInt(10, 60);
+            LocalTime startTime =  LocalTime.parse(startTime1);
+
+            LocalTime endTime =  LocalTime.parse(startTime1).plusHours(num);
 
 
             String email = faker.internet().emailAddress(name.toLowerCase().replace(" ", "."));
 
-
-            CourseDTO courseDTO = new CourseDTO(
-                    id,
-                    name,
-                    price,
-                    duration,
-                    startTime,
-                    endTime,
-                    new Mentor(name, id, email)
-            );
+            CourseDTO courseDTO = new CourseDTO(id, name, price, duration, startTime, endTime, new Mentor(name, id, email));
 
             boolean isSaved = courseService.saveUser(courseDTO);
 

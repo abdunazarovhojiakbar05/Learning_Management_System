@@ -15,6 +15,10 @@ public class Util {
 
     @Getter
     private static String UserId =  UUID.randomUUID().toString();
+    @Getter
+    private static String MentorId =  UUID.randomUUID().toString();
+    @Getter
+    private static String CourseId =  UUID.randomUUID().toString();
 
     public static String getStr(String text) {
         System.out.print(text + ": ");

@@ -1,6 +1,9 @@
 package dto;
 
+import entity.Mentor;
 import entity.User;
 
-public record CourseDTO(String courseId, String courseName, int price, String duration, String startTime, String endTime, User mentor) {
+import java.time.LocalTime;
+
+public record CourseDTO(String courseId, String courseName, double price, String duration, LocalTime startTime, LocalTime endTime, Mentor mentor) {
 }

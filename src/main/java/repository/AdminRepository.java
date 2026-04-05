@@ -1,8 +1,16 @@
 package repository;
 
-import entity.User;
-import enums.Status2;
-
 public class AdminRepository {
 
+    private static AdminRepository adminRepository;
+
+    private AdminRepository() {
+    }
+
+    public static AdminRepository getInstance() {
+        if (adminRepository == null) {
+            adminRepository = new AdminRepository();
+        }
+        return adminRepository;
+    }
 }
