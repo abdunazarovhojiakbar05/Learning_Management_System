@@ -3,6 +3,7 @@ package controller.admin_controller;
 import dto.CourseDTO;
 import entity.Course;
 import entity.Mentor;
+import entity.User;
 import service.CourseService;
 
 import java.time.LocalTime;
@@ -22,7 +23,7 @@ public class CrudCourse {
                     2. Read Course
                     3. Update Course
                     4. Delete Course
-                    5. back
+                    0. back
                     """);
 
             int menu = getNum("choose one");
@@ -75,8 +76,130 @@ public class CrudCourse {
         List<Course> course = ReadCourse();
         course.forEach(System.out::println);
 
+        String name = getStr("enter name");
+        updateCourse(name);
+
     }
 
     public static void DeleteCourse() {
+        ReadCourse();
+
+        String name = getStr("enter course name part or full");
+        List<Course> course = courseService.getCourseByPartOrFull(name);
+        if (!course.isEmpty()) {
+            course.forEach(System.out::println);
+            String nameCourse = getStr("enter name");
+            boolean res = courseService.deleteCourseByEmail(nameCourse);
+            if (res) System.out.println("User deleted");
+            else System.out.println("User not found");
+
+        }
+        System.out.println("User not found");
     }
+
+
+    public static void updateCourse(String name) {
+
+        Course course = courseService.getCourseByName(name);
+
+        System.out.println("""
+                1. change name
+                2. change price
+                3. change duration
+                4. change start
+                5. change mentor
+                0. back
+                """);
+        int menu = getNum("choose one");
+        switch (menu) {
+            case 1 -> changeName(course);
+            case 2 -> changePrice(course);
+            case 3 -> changeDuration(course);
+            case 4 -> changeStart(course);
+            case 5 -> ChangeMentor(course);
+            case 0 -> {
+                return;
+            }
+        }
+
+    }
+
+    public static void changeName(Course course) {
+        System.out.println("cours's old name: " + course.getName());
+        String name = getStr("enter new name");
+        course.setName(name);
+
+        boolean isUpdated = courseService.updateCourseName(course);
+
+        if (isUpdated) {
+            System.out.println("✅ ism muvaffaqiyatli almashtirildi!");
+        } else {
+            System.out.println("❌ Xatolik: Bazada ismni yangilab bo'lmadi.");
+        }
+
+    }
+
+    public static void changePrice(Course course) {
+        System.out.println("cours's old price: " + course.getPrice());
+        double price = getNum("enter new price");
+        course.setPrice(price);
+
+        boolean isUpdated = courseService.updateCoursePrice(course);
+
+        if (isUpdated) {
+            System.out.println("✅ narx muvaffaqiyatli almashtirildi!");
+        } else {
+            System.out.println("❌ Xatolik: Bazada narxni yangilab bo'lmadi.");
+        }
+    }
+
+    public static void changeDuration(Course course) {
+        System.out.println("cours's old duration: " + course.getDuration());
+        String duration = getStr("enter new duration");
+        course.setDuration(duration);
+
+        boolean isUpdated = courseService.updateCourseDuration(course);
+
+        if (isUpdated) {
+            System.out.println("✅ Davomiylik muvaffaqiyatli almashtirildi!");
+        } else {
+            System.out.println("❌ Xatolik: Bazada davomiylikni yangilab bo'lmadi.");
+        }
+    }
+
+    public static void changeStart(Course course) {
+        System.out.println("cours's old start: " + course.getStartTime());
+        LocalTime startTime = LocalTime.parse(getStr("enter start time"));
+        course.setStartTime(startTime);
+
+        boolean isUpdated = courseService.updateCourStartTime(course);
+
+        if (isUpdated) {
+            System.out.println("✅ boshlanish vaqt muvaffaqiyatli almashtirildi!");
+        } else {
+            System.out.println("❌ Xatolik: Bazada boshlanish vaqtni yangilab bo'lmadi.");
+        }
+    }
+
+    public static void ChangeMentor(Course course) {
+        System.out.println("Kursning hozirgi mentori: " + course.getMentor().getName());
+
+        String mentorName = getStr("Yangi mentor ismini kiriting: ");
+        String mentorId = getMentorId();
+        String email = getStr("Yangi mentor emailini kiriting: ");
+
+        Mentor newMentor = new Mentor(mentorName, mentorId, email);
+
+        course.setMentor(newMentor);
+
+
+        boolean isUpdated = courseService.updateCourseMentor(course);
+
+        if (isUpdated) {
+            System.out.println("✅ Mentor muvaffaqiyatli almashtirildi!");
+        } else {
+            System.out.println("❌ Xatolik: Bazada mentorni yangilab bo'lmadi.");
+        }
+    }
+
 }

@@ -21,7 +21,7 @@ public class Course {
     private String duration;
     private LocalTime startTime;
     private LocalTime endTime;
-    private User mentor;
+    private Mentor mentor;
 
     @Override
     public String toString() {

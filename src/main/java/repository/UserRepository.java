@@ -46,21 +46,21 @@ public class UserRepository {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Bazadan foydalanuvchini olishda xatolik: " + e.getMessage());
+            e.getMessage();
         }
         return null;
     }
 
 
     public List<User> searchUsersByName(String namePart) {
-         String sql = "SELECT * FROM users WHERE name ILIKE ?";
+        String sql = "SELECT * FROM users WHERE name ILIKE ?";
 
         List<User> userList = new ArrayList<>();
 
         try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-             stmt.setString(1, "%" + namePart + "%");
+            stmt.setString(1, "%" + namePart + "%");
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -110,13 +110,31 @@ public class UserRepository {
             ps.setString(7, "ACTIVE");
 
             ps.executeUpdate();
-           return true;
+            return true;
 
         } catch (SQLException e) {
-          return false;
+            return false;
         }
     }
 
+
+    public boolean updateUser(User user) {
+        String sql = "UPDATE users SET name = ?, password = ?, email = ?, role = ?, status = ?, status2 = ? WHERE id = ?";
+        try (Connection con = DriverManager.getConnection(url, dbUser, dbPass);
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getRole().name());
+            ps.setString(5, user.getStatus().name());
+            ps.setString(6, user.getStatus2().name());
+            ps.setString(7, user.getId());
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
 
 
     public boolean deleteUser(String email) {

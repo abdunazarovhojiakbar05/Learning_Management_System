@@ -9,6 +9,7 @@ import repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminService {
 
@@ -30,7 +31,7 @@ public class AdminService {
 
 
         User user = userRepository.getUserByEmail(email);
-        if (user.getStatus().equals(Status2.BLOCKED)) {
+        if (Objects.equals(user.getStatus(), Status2.BLOCKED)) {
             user.setStatus2(Status2.ACTIVE);
             return true;
         }
@@ -75,5 +76,16 @@ public class AdminService {
 
         return userRepository.deleteUser(email);
 
+    }
+
+    public boolean updateUser(User u) {
+
+
+        return userRepository.updateUser(u);
+    }
+
+    public boolean updatePassword(User u) {
+
+        return userRepository.updateUser(u);
     }
 }

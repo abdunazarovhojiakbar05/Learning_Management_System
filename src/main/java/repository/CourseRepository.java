@@ -3,13 +3,8 @@ package repository;
 import dto.CourseDTO;
 import entity.Course;
 import entity.Mentor;
-import entity.User;
-import enums.Status;
-import enums.Status2;
-import enums.UserRole;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +45,27 @@ public class CourseRepository {
 
     }
 
+    public Course getUsersByName(String name) {
+        String sql = "SELECT * FROM courses WHERE name ILIKE ?";
+
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, "%" + name + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUser(rs);
+                }
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return null;
+    }
+
 
     public List<Course> searchUsersByName(String namePart) {
         String sql = "SELECT * FROM courses WHERE name ILIKE ?";
@@ -80,10 +96,17 @@ public class CourseRepository {
         course.setDuration(rs.getString("duration"));
         course.setStartTime(rs.getTime("startTime").toLocalTime());
         course.setEndTime(rs.getTime("endTime").toLocalTime());
-        course.setMentor(rs.getObject("mentor", User.class));
+
+        String mentorEmail = rs.getString("mentor");
+        if (mentorEmail != null) {
+            Mentor mentor = new Mentor();
+            mentor.setEmail(mentorEmail);
+            course.setMentor(mentor);
+        }
 
         return course;
     }
+
 
     public boolean saveCourse(CourseDTO courseDTO) {
         String sql = "INSERT INTO courses (id, name, price,  duration, \"startTime\", \"endTime\", mentor ) VALUES (?, ?, ?, ?, ?, ?, ? )";
@@ -110,4 +133,47 @@ public class CourseRepository {
     }
 
 
+    public boolean updateCourse(Course course) {
+        String sql = "UPDATE courses SET name = ?, price = ?, duration = ?, startTime = ?, endTime = ?, mentor = ? WHERE id = ? ";
+
+        try (Connection con = getConnection()) {
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, course.getName());
+            ps.setDouble(2, course.getPrice());
+            ps.setString(3, course.getDuration());
+
+            ps.setObject(4, course.getStartTime(), java.sql.Types.TIME);
+            ps.setObject(5, course.getEndTime(), java.sql.Types.TIME);
+
+            ps.setString(6, course.getMentor().getEmail());
+            ps.setString(7, course.getId());
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            return false;
+
+        }
+    }
+
+    public boolean deleteCourse(String name) {
+
+        String sql = "DELETE FROM courses WHERE name = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            int rowsAffected = ps.executeUpdate();
+
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+
+            return false;
+        }
+
+    }
 }
