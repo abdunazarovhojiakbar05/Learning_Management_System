@@ -111,7 +111,8 @@ public class CourseRepository {
     public boolean saveCourse(CourseDTO courseDTO) {
         String sql = "INSERT INTO courses (id, name, price,  duration, \"startTime\", \"endTime\", mentor ) VALUES (?, ?, ?, ?, ?, ?, ? )";
 
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, courseDTO.courseId());
             ps.setString(2, courseDTO.courseName());
@@ -134,26 +135,34 @@ public class CourseRepository {
 
 
     public boolean updateCourse(Course course) {
-        String sql = "UPDATE courses SET name = ?, price = ?, duration = ?, startTime = ?, endTime = ?, mentor = ? WHERE id = ? ";
 
-        try (Connection con = getConnection()) {
+        String sql = "UPDATE courses SET name = ?, price = ?, duration = ?, \"startTime\" = ?, \"endTime\" = ?, mentor = ? WHERE id = ?";
 
-            PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, course.getName());
             ps.setDouble(2, course.getPrice());
             ps.setString(3, course.getDuration());
 
-            ps.setObject(4, course.getStartTime(), java.sql.Types.TIME);
-            ps.setObject(5, course.getEndTime(), java.sql.Types.TIME);
+            ps.setObject(4, course.getStartTime() != null ? java.sql.Time.valueOf(course.getStartTime()) : null);
+            ps.setObject(5, course.getEndTime() != null ? java.sql.Time.valueOf(course.getEndTime()) : null);
 
-            ps.setString(6, course.getMentor().getEmail());
+
+            if (course.getMentor() != null) {
+                ps.setString(6, course.getMentor().getEmail());
+            } else {
+                ps.setNull(6, java.sql.Types.VARCHAR);
+            }
+
             ps.setString(7, course.getId());
 
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            return false;
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
 
+        } catch (SQLException e) {
+            System.err.println("Kursni yangilashda xatolik: " + e.getMessage());
+            return false;
         }
     }
 

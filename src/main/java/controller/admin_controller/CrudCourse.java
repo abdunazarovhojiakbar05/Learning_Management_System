@@ -201,5 +201,4 @@ public class CrudCourse {
             System.out.println("❌ Xatolik: Bazada mentorni yangilab bo'lmadi.");
         }
     }
-
 }
